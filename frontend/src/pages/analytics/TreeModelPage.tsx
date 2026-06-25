@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Card, PageTitle, Skeleton, EmptyState, InsightPanel } from '@/components/ui/index'
 import { useT } from '@/hooks/useT'
 import { seqColor, rankColor } from '@/utils/colorScale'
+import { apiFetch } from '@/api/client'
 
 // ── Feature & Genre colour palettes ──────────────────────────────────────────
 const FEATURE_COLORS: Record<string, string> = {
@@ -59,7 +60,7 @@ interface TreeResult {
 }
 
 function fetchGenreClassifier(): Promise<TreeResult> {
-  return fetch('/api/analysis/genre-classifier').then((r) => r.json())
+  return apiFetch<TreeResult>('/analysis/genre-classifier')
 }
 
 // ── Layout algorithm ──────────────────────────────────────────────────────────
@@ -382,14 +383,22 @@ export function TreeModelPage() {
   const t = useT()
   const [tab, setTab] = useState<'dt' | 'rf'>('dt')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['genre-classifier'],
     queryFn: fetchGenreClassifier,
     staleTime: 1000 * 60 * 10,
+    retry: 1,
   })
 
   if (isLoading) return (
     <div><PageTitle title={t('page.tree.title')} subtitle={t('page.tree.subtitle')} /><PageSkeleton /></div>
+  )
+
+  if (isError) return (
+    <div>
+      <PageTitle title={t('page.tree.title')} subtitle={t('page.tree.subtitle')} />
+      <EmptyState message={t('ui.run_pipeline')} />
+    </div>
   )
 
   if (!data || data.error) return (

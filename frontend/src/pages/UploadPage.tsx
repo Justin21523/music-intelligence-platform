@@ -189,9 +189,13 @@ export function UploadPage() {
       } catch { setUploadErrors(['Failed to upload files — check that the API is running.']); setUploading(false); return }
       setUploading(false)
     }
-    await startPipeline(useSample)
-    await refetch()
-    queryClient.invalidateQueries()
+    try {
+      await startPipeline(useSample)
+      await refetch()
+      queryClient.invalidateQueries()
+    } catch {
+      setUploadErrors(['Failed to start pipeline — make sure the API server is running.'])
+    }
   }
 
   const handleReset = async () => {
@@ -329,23 +333,31 @@ export function UploadPage() {
           </div>
 
           {/* Start button */}
-          <div className="flex items-center gap-4">
-            <button
-              onClick={handleStart}
-              disabled={!canStart || uploading}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
-              style={{
-                background: canStart && !uploading ? 'linear-gradient(135deg, #ff6b35, #f7931e)' : '#25253a',
-                color: canStart && !uploading ? '#0d0d14' : '#6b6b8a',
-                cursor: canStart && !uploading ? 'pointer' : 'not-allowed',
-                boxShadow: canStart && !uploading ? '0 4px 20px rgba(255,107,53,0.35)' : 'none',
-              }}
-            >
-              <Play size={16} />
-              {uploading ? 'Uploading…' : 'Start Pipeline'}
-            </button>
-            {!canStart && !useSample && (
-              <p className="text-xs" style={{ color: '#6b6b8a' }}>Upload all 4 CSV files or select sample data</p>
+          <div className="space-y-3">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={handleStart}
+                disabled={!canStart || uploading}
+                className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200"
+                style={{
+                  background: canStart && !uploading ? 'linear-gradient(135deg, #ff6b35, #f7931e)' : '#25253a',
+                  color: canStart && !uploading ? '#0d0d14' : '#6b6b8a',
+                  cursor: canStart && !uploading ? 'pointer' : 'not-allowed',
+                  boxShadow: canStart && !uploading ? '0 4px 20px rgba(255,107,53,0.35)' : 'none',
+                }}
+              >
+                <Play size={16} />
+                {uploading ? 'Uploading…' : 'Start Pipeline'}
+              </button>
+              {!canStart && !useSample && (
+                <p className="text-xs" style={{ color: '#6b6b8a' }}>Upload all 4 CSV files or select sample data</p>
+              )}
+            </div>
+            {uploadErrors.length > 0 && (
+              <div className="p-2 rounded-lg text-xs space-y-1"
+                style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)' }}>
+                {uploadErrors.map((e, i) => <p key={i} style={{ color: '#f87171' }}>{e}</p>)}
+              </div>
             )}
           </div>
 
