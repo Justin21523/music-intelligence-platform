@@ -1,0 +1,83 @@
+data:
+  duckdb_path: "data/warehouse.duckdb"
+  sample_dir: "data/sample"
+  processed_dir: "data/processed"
+  models_dir: "data/models"
+  logs_dir: "data/logs"
+
+generation:
+  n_artists: 800
+  n_tracks: 10000
+  n_users: 500
+  n_listens: 50000
+  seed: 42
+
+genres:
+  - Rock
+  - Pop
+  - Hip-Hop
+  - Electronic
+  - Jazz
+  - Classical
+  - R&B
+  - Country
+  - Metal
+  - Folk
+  - Reggae
+  - Blues
+  - Latin
+  - Indie
+  - Ambient
+
+embedding:
+  model_name: "sentence-transformers/all-MiniLM-L6-v2"
+  dim: 384
+  batch_size: 128
+
+retrieval:
+  bm25_k1: 1.5
+  bm25_b: 0.75
+  faiss_index_type: "FlatIP"  # exact search; swap to IVF for scale
+  hybrid_alpha: 0.5           # 0=pure BM25, 1=pure vector
+  rrf_k: 60
+
+models:
+  popularity:
+    score_formula: "log1p_play_count"
+  item_similarity:
+    n_neighbors: 50
+    feature_cols:
+      - tempo
+      - energy
+      - danceability
+      - acousticness
+      - valence
+      - instrumentalness
+      - loudness
+      - speechiness
+      - liveness
+  als:
+    factors: 64
+    iterations: 20
+    regularization: 0.01
+    alpha: 40.0
+  content:
+    audio_weight: 0.6
+    tag_weight: 0.4
+  hybrid:
+    weights:
+      popularity: 0.1
+      als: 0.5
+      content: 0.4
+
+evaluation:
+  k_values: [5, 10, 20]
+  test_fraction: 0.2
+  min_listens_for_eval: 5
+  output_path: "data/processed/evaluation_results.csv"
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  default_n_results: 10
+  max_n_results: 50

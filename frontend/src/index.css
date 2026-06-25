@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg:        #0d0d14;
+  --color-surface:   #14141f;
+  --color-surface2:  #1a1a2e;
+  --color-primary:   #ff6b35;
+  --color-primary-h: #e55a25;
+  --color-text:      #e8e8f0;
+  --color-muted:     #6b6b8a;
+  --color-border:    #25253a;
+  --color-success:   #22d3ee;
+  --color-warn:      #f7c59f;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: #0d0d14;
+  color: #e8e8f0;
+  min-height: 100vh;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+* { box-sizing: border-box; }
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #14141f; }
+::-webkit-scrollbar-thumb { background: #25253a; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6b6b8a; }
+
+/* ── Pipeline Journey Tour ─────────────────────────────────────────── */
+
+[data-tour-active="true"] {
+  position: relative;
+  z-index: 45;
+  box-shadow: 0 0 0 3px #ff6b35, 0 0 0 9999px rgba(0, 0, 0, 0.55);
+  border-radius: 10px;
+  animation: tourSpotlight 0.4s ease forwards;
+  transition: box-shadow 0.3s ease;
+}
+
+@keyframes tourSpotlight {
+  from { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.5); }
+  to   { box-shadow: 0 0 0 3px #ff6b35, 0 0 0 9999px rgba(0, 0, 0, 0.55); }
+}
+
+/* Tour animation shared keyframes */
+@keyframes tour-fillBar {
+  from { width: 0 }
+  to   { width: var(--bar-target, 70%) }
+}
+
+@keyframes tour-fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tour-pop {
+  0%   { transform: scale(0); }
+  70%  { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+@keyframes tour-strikeRow {
+  0%   { opacity: 1; text-decoration: none; }
+  50%  { opacity: 0.4; }
+  100% { opacity: 0.25; text-decoration: line-through; }
+}
+
+@keyframes tour-growBar {
+  from { transform: scaleY(0); }
+  to   { transform: scaleY(1); }
+}
+
+@keyframes tour-dashFlow {
+  from { stroke-dashoffset: 120; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes tour-arcFill {
+  from { stroke-dashoffset: 88; }
+  to   { stroke-dashoffset: var(--arc-target, 0); }
+}

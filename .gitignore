@@ -1,0 +1,60 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+.env
+*.egg-info/
+dist/
+build/
+
+# Data — never commit raw or processed data
+data/warehouse.duckdb
+data/warehouse.duckdb.wal
+data/processed/
+data/models/
+data/logs/
+# DO commit sample data
+!data/sample/
+!data/sample/*.csv
+
+# ML artifacts
+*.pkl
+*.index
+*.npy
+*.pt
+*.bin
+
+# HuggingFace cache
+.cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Pytest / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruff / mypy
+.mypy_cache/
+.ruff_cache/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend build & deps
+frontend/node_modules/
+frontend/dist/
+frontend/test-results/
+frontend/playwright-report/
+
+# uv lock (large)
+# uv.lock  # keep this committed

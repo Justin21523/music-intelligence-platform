@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - DUCKDB_PATH=/app/data/warehouse.duckdb
+      - LOG_LEVEL=INFO
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+
+  # Optional: PostgreSQL for production write path
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: music_intelligence
+      POSTGRES_USER: music
+      POSTGRES_PASSWORD: music_secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    profiles:
+      - postgres
+
+volumes:
+  postgres_data:
