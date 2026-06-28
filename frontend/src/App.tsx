@@ -40,6 +40,10 @@ const queryClient = new QueryClient({
   },
 })
 
+const routerBasename = import.meta.env.BASE_URL === '/'
+  ? undefined
+  : import.meta.env.BASE_URL.replace(/\/$/, '')
+
 function RouteLoader() {
   return (
     <div className="flex justify-center items-center" style={{ minHeight: 300 }}>
@@ -60,7 +64,7 @@ export default function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter basename={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+      <BrowserRouter basename={routerBasename}>
         <Layout>
           <Suspense fallback={<RouteLoader />}>
             <Routes>
